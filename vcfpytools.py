@@ -1,6 +1,8 @@
+import gzip
+from operator import itemgetter
+
 def parser(vcf_file):
     if vcf_file.endswith('gz'):
-        import gzip
         with gzip.open(vcf_file, 'rb') as f:
             for line in f:
                 yield line.decode()
@@ -31,11 +33,10 @@ def get_samples(vcf_file):
         if line.startswith('#CHROM'):
             return line.rstrip().split('\t')[9:]
 
-def get_genotypes(vcf_file, samples, binary = False):
+def get_genotypes_hap(vcf_file, samples, binary = False):
     '''
     Just for haploids
     '''
-    from operator import itemgetter
     indices = [get_samples(vcf_file).index(i) for i in samples]
     indices = [i+9 for i in indices]
     for line in get_body(vcf_file):
@@ -51,4 +52,27 @@ def get_genotypes(vcf_file, samples, binary = False):
                 yield alleles[genotps[0]]
             else:
                 yield genotps[0]
+
+def get_genotypes_dip(vcf_file, samples, binary = False, phase = '/'):
+    '''
+    By deafult assumes unphased genotypes. Otherwise change phase to '|'
+    '''
+    indices = [vcfpytools.get_samples(vcf_file).index(i) for i in samples]
+    indices = [i+9 for i in indices]
+    for line in vcfpytools.get_body(vcf_file):
+        alleles = {'0':line.split('\t')[3], '1':line.split('\t')[4], '.':'N'}
+        if len(alleles['1']) > 1: # Just biallelic SNPs
+            continue
+        genotps = [i.split(':')[0].split(phase) for i in itemgetter(*indices) (line.rstrip().split('\t'))]
+        if len(samples) > 1: # More than 1 sample
+            if binary == False:
+                yield [phase.join((alleles[genotps[g][0]], alleles[genotps[g][1]])) for g in range(len(genotps))]
+            else:
+                yield [phase.join(g) for g in genotps]
+        else: # For 1 sample
+            if binary == False:
+                phase.join((alleles[genotps[0][0]], alleles[genotps[0][1]]))
+            else:
+                yield phase.join(genotps[0])
+
 
