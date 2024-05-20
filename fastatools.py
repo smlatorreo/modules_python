@@ -40,15 +40,16 @@ def kimura2parameter(Seq1, Seq2):
     transitions = {('C','T'),('T','C'),('A','G'),('G','A')}
     Seq1 = [i.upper() for i in Seq1]
     Seq2 = [i.upper() for i in Seq2]
+    N = 0
     counts = {'t':0,'v':0}
     for n1, n2 in zip(Seq1, Seq2):
         if n1 in bases and n2 in bases:
+            N += 1
             if n1 != n2:
                 if (n1, n2) in transitions:
                     counts['t'] += 1
                 else:
                     counts['v'] += 1
-    N = len(Seq1)
     P = counts['t']/N
     Q = counts['v']/N
     d = -0.5 * log((1 - 2 * P - Q) * sqrt(1 - 2 * Q))
