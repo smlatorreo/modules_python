@@ -40,8 +40,7 @@ def kimura2parameter(Seq1, Seq2):
     :return: float
     """
     if len(Seq1) != len(Seq2):
-        print('Sequences need to be with the same length')
-        return None
+        raise ValueError('Sequences need to be with the same length')
     bases = ('A','C','G','T')
     transitions = {('C','T'),('T','C'),('A','G'),('G','A')}
     Seq1 = [i.upper() for i in Seq1]
@@ -58,5 +57,8 @@ def kimura2parameter(Seq1, Seq2):
                     counts['v'] += 1
     P = counts['t']/N
     Q = counts['v']/N
-    d = (-1/2) * log((1 - (2*P) - Q) * sqrt(1 - (2*Q)))
+    try:
+        d = (-1/2) * log((1 - (2*P) - Q) * sqrt(1 - (2*Q)))
+    except ValueError:
+        raise ValueError('K2P is not suitable for highly diverged sequences')
     return d
