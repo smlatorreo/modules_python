@@ -52,5 +52,5 @@ def kimura2parameter(Seq1, Seq2):
                     counts['v'] += 1
     P = counts['t']/N
     Q = counts['v']/N
-    d = -0.5 * log((1 - 2 * P - Q) * sqrt(1 - 2 * Q))
+    d = (-1/2) * log((1 - (2*P) - Q) * sqrt(1 - (2*Q)))
     return d
