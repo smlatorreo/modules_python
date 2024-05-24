@@ -33,6 +33,12 @@ def simulate_seq(length, CG_content = 0.5):
     return ''.join(seq)
 
 def kimura2parameter(Seq1, Seq2):
+    """Given two nucleotide sequences of the same length,
+    this function returns their Kimura two-parameter distance
+    :param Seq1: Sequence 1 (str) or (list)
+    :param Seq2: Sequence 2 (str) or (list)
+    :return: float
+    """
     if len(Seq1) != len(Seq2):
         print('Sequences need to be with the same length')
         return None
