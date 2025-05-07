@@ -25,7 +25,7 @@ def simulate_seq(length, GC_content=0.5, as_str=True):
     """Given a certain length and optionally a GC content
     value, this function returns a simulated DNA sequence
     :param length: Length of the sequence (int)
-    :param CG_content: Value from 0.0 to 1.0 (float) (default = 0.5)
+    :param GC_content: Value from 0.0 to 1.0 (float) (default = 0.5)
     :param as_str: Return as a string (True; default) of as a numpy array (False)
     :return: String or numpy array
     """
@@ -33,9 +33,9 @@ def simulate_seq(length, GC_content=0.5, as_str=True):
     pAT = (1 - GC_content) / 2
     bases = ('A', 'T', 'C', 'G')
     probs = [pAT, pAT, pCG, pCG]   
-    sequence = np.random.choice(bases, size=L, p=probs)
+    sequence = np.random.choice(bases, size=length, p=probs)
     if as_str == True:
-        return sequence.view(f'U{L}').item()
+        return sequence.view(f'U{length}').item()
     else:
         return sequence
 
