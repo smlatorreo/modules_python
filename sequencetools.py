@@ -1,3 +1,4 @@
+import numpy as np
 from random import shuffle
 from math import log, sqrt
 
@@ -19,18 +20,24 @@ def readfasta(file):
             sequences[nameseq] = sequence
     return sequences
 
-def simulate_seq(length, CG_content = 0.5):
+
+def simulate_seq(length, GC_content=0.5, as_str=True):
     """Given a certain length and optionally a CG content
     value, this function returns a simulated DNA sequence
     :param length: Length of the sequence (int)
     :param CG_content: Value from 0.0 to 1.0 (float) (default = 0.5)
-    :return: String
+    :param as_str: Return as a string (True; default) of as a numpy array (False)
+    :return: String or numpy array
     """
-    nucl = ('A','T','C','G')
-    props = {'C':CG_content/2,'G':CG_content/2,'A':(1 -CG_content)/2,'T':(1 -CG_content)/2}
-    seq = list(''.join([i*(int(length*props[i])) for i in nucl]))
-    shuffle(seq)
-    return ''.join(seq)
+    pCG = CG_content / 2
+    pAT = (1 - CG_content) / 2
+    bases = ('A', 'T', 'C', 'G')
+    probs = [pAT, pAT, pCG, pCG]   
+    sequence = np.random.choice(bases, size=L, p=probs)
+    if as_str == True:
+        return sequence.view(f'U{L}').item()
+    else:
+        return sequence
 
 def kimura2parameter(Seq1, Seq2):
     """Given two nucleotide sequences of the same length,
