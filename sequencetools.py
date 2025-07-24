@@ -39,6 +39,16 @@ def simulate_seq(length, GC_content=0.5, as_str=True):
     else:
         return sequence
 
+def rev_comp(seq):
+    """It returns the reverse-complement sequence of
+    an input sequence
+    :param seq: Input sequence (str)
+    """
+    complement = {'A':'T','T':'A','C':'G','G':'C','N':'N','.':'.','?':'?'}
+    revcomp = ''.join([complement[n] for n in seq][::-1])
+    return revcomp
+
+
 def kimura2parameter(Seq1, Seq2):
     """Given two nucleotide sequences of the same length,
     this function returns their Kimura two-parameter distance
