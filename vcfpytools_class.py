@@ -87,7 +87,8 @@ class vcf_object:
             for metric in metrics:
                 m = 'NA'
                 if metric in info_col:
-                    m = info_col.split(metric+'=')[1].split(';')[0]
+                    # Ignores information of >= triallelic sites
+                    m = info_col.split(metric+'=')[1].split(';')[0].split(',')[0]
                 metrics_out.append(m)
             return metrics_out
         yield metrics
