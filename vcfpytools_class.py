@@ -79,6 +79,22 @@ class vcf_object:
             else:
                 yield {'Position':pos, 'Alleles':(alleles['0'],alleles['1']), 'Genotypes':genotps}
 
+    def get_info_values(self):
+        info = [i for i in (self.get_header()) if i.startswith('##INFO')]
+        metrics = [i.split('ID=')[1].split(',')[0] for i in info]
+        def extract_metrics_info(info_col, metrics):
+            metrics_out = []
+            for metric in metrics:
+                m = 'NA'
+                if metric in info_col:
+                    m = info_col.split(metric+'=')[1].split(';')[0]
+                metrics_out.append(m)
+            return metrics_out
+        yield metrics
+        for record in self.get_body():
+            info_col = record.split('\t')[7]
+            yield extract_metrics_info(info_col, metrics)
+
     def __str__(self):
         return 'VCF object\nFile name: \'{}\'\nGzipped: {}'.format(self.path, self.is_gzipped)
 
